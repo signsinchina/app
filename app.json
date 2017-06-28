@@ -1,5 +1,13 @@
 {
   "expo": {
-    "sdkVersion": "18.0.0"
+    "name": "signsinchina",
+    "version": "0.3.0",
+    "sdkVersion": "18.0.0",
+    "ios": {
+      "bundleIdentifier": "com.sang.signsinchina"
+    },
+    "android": {
+      "package": "com.sang.signsinchina"
+    }
   }
 }

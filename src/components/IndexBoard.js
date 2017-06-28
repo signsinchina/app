@@ -5,8 +5,10 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, ScrollView, Text, Modal, Image, TouchableWithoutFeedback } from 'react-native'
 import { Button } from 'react-native-elements'
+import { BlurView } from 'expo'
+import _ from 'lodash'
 
-import { CARD_MARGIN, CARD_PLACEHOLDERS, CARD_BORDER_RADIUS, BOARD_BORDER_RADIUS, SCREEN_HEIGHT, SCREEN_WIDTH } from '../values'
+import { CARD_MARGIN, CARD_BORDER_RADIUS, BOARD_BORDER_RADIUS, BOARD_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, TABBAR_HEIGHT, PIXEL } from '../values'
 
 import SignCard from './SignCard'
 import NavButton from './NavButton'
@@ -20,8 +22,16 @@ export default class CaptureBoard extends Component {
       menuOpened: false,
       modalVisible: false,
       modalData: null,
-      touchMove: false
+      touchMove: false,
+      headerHeight: 0,
+      filter: {
+        display: 'list',
+        type: 'area',
+        tag: 'All',
+      },
     }
+
+    this.setHeaderHeight = _.debounce(this.setHeaderHeight, 32, false)
   }
   toggleMenu() {
     this.setState({
@@ -48,16 +58,76 @@ export default class CaptureBoard extends Component {
       })
     }
   }
+  changeFilter(display, type, tag) {
+    let filter = this.state.filter
+    if (display) {
+      filter.display = display
+    }
+    if (type) {
+      if (filter.type === type) {
+        // toggle this filter
+        filter.type = 'all'
+      } else {
+        filter.type = type
+      }
+    }
+    if (tag) {
+      filter.tag = tag
+    } else {
+      filter.tag = 'All'
+    }
+    this.setState({ filter })
+  }
   touchCancel() {
     this.setState({
       touchMove: true
     })
   }
+  setHeaderHeight(headerHeight) {
+    // if (!this.state.headerHeight) {
+    this.setState({headerHeight})
+    // }
+  }
   render() {
-    const { menuOpened } = this.state
+    const { menuOpened, filter, headerHeight } = this.state
+    const { api } = this.props
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
+        <TouchableWithoutFeedback
+          onPressIn={() => this.touchCancel()}
+          onPressOut={() => this.closeModal()}>
+          <ScrollView 
+            style={styles.scrollViewContainer}
+            scrollIndicatorInsets={{
+              top: headerHeight,
+              bottom: TABBAR_HEIGHT,
+            }}>
+            <View style={[styles.cardContainer, {
+              paddingTop: headerHeight
+            }]}>
+              <View style={{width: '100%'}}>
+                <Text style={styles.searchResultText}>{
+                  this.props.apiReady ? 'SHOWING "RESULTS"' : 'LOADING...'
+                }</Text>
+              </View>
+              {
+                api.media.map(({img_url, caption}, index) =>
+                  <SignCard
+                    key={index}
+                    file={img_url}
+                    title={caption}
+                    openModal={(...args) => this.openModal(...args)}
+                    closeModal={() => this.closeModal()}/>
+                )
+              }
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+
+        <BlurView intensity={100} tint='light' style={styles.header} onLayout={(event) => {
+          let { height } = event.nativeEvent.layout
+          this.setHeaderHeight(height)
+        }}>
           <IndexMenu open={menuOpened}/>
           <View style={styles.titleContainer}>
             <View style={{flex: 0}}>
@@ -75,40 +145,43 @@ export default class CaptureBoard extends Component {
           <View style={styles.navbar}>
             <View style={styles.navbarModes}>
               <Button containerViewStyle={styles.btnContainerView}
-                      textStyle={{marginRight: 0}}
-                      buttonStyle={styles.navbarIcon} icon={{name: 'list', color: 'black', style: {marginRight: 0}}}
+                      textStyle={{marginRight: 4}}
+                      buttonStyle={styles.navbarIcon}
+                      icon={{name: 'list', color: filter.display === 'list' ? 'black' : 'rgba(0, 0, 0, 0.2)', style: {marginRight: 0}}}
+                      onPress={() => this.changeFilter('list', null)}
                       large={true}/>
               <Button containerViewStyle={styles.btnContainerView}
                       buttonStyle={styles.navbarIcon}
-                      icon={{name: 'map', color: 'black', style: {marginRight: 0}}}
+                      icon={{name: 'map', color: filter.display === 'map' ? 'black' : 'rgba(0, 0, 0, 0.2)', style: {marginRight: 0}}}
+                      onPress={() => this.changeFilter('map', null)}
                       large={true}/>
             </View>
             <View style={styles.navbarBtns}>
-              <NavButton title="AREA"/>
-              <NavButton title="PROPERTY"/>
-              <NavButton title="KIND"/>
+              <NavButton title="AREA" selected={filter.type === 'area'} onPress={() => this.changeFilter(null, 'area')} />
+              <NavButton title="PROPERTY" selected={filter.type === 'property'} onPress={() => this.changeFilter(null, 'property')} />
+              <NavButton title="KIND" selected={filter.type === 'kind'} onPress={() => this.changeFilter(null, 'kind')} />
             </View>
           </View>
-        </View>
-
-        <TouchableWithoutFeedback
-          onPressIn={() => this.touchCancel()}
-          onPressOut={() => this.closeModal()}>
-          <ScrollView style={styles.scrollViewContainer}>
-            <Text style={styles.searchResultText}>SHOWING "RESULTS"</Text>
-            <View style={styles.cardContainer}>
+          <ScrollView horizontal={true}>
+            <View style={styles.filters}>
               {
-                CARD_PLACEHOLDERS.map((CARD_FILE, index) =>
-                  <SignCard
-                    key={index}
-                    file={CARD_FILE}
-                    openModal={(...args) => this.openModal(...args)}
-                    closeModal={() => this.closeModal()}/>
-                )
+                (() => {
+                  switch(filter.type) {
+                    case 'area':
+                      return ['All', 'Shanghai', 'Hongkong', 'Taipei', 'Shenzhen']
+                        .map((key, index) => <NavButton key={index} selected={filter.tag === key} onPress={() => this.changeFilter(null, null, key)} secondary={true} title={key}/>)
+                    case 'property':
+                      return ['All', "Danger warning", "Priority", "Prohibitory or restrictive", "Mandatory", "Information, facilities, or service", "Direction, position, or indication"]
+                        .map((key, index) => <NavButton key={index} selected={filter.tag === key} onPress={() => this.changeFilter(null, null, key)} secondary={true} title={key}/>)
+                    case 'kind':
+                      return ['All', "Metro", "Road", "Facility", "Other"]
+                        .map((key, index) => <NavButton key={index} selected={filter.tag === key} onPress={() => this.changeFilter(null, null, key)} secondary={true} title={key}/>)
+                  }
+                })()
               }
             </View>
           </ScrollView>
-        </TouchableWithoutFeedback>
+        </BlurView>
 
         <Modal
           animationType='fade'
@@ -142,16 +215,18 @@ const styles = StyleSheet.create({
     borderRadius: BOARD_BORDER_RADIUS,
   },
   header: {
+    position: 'absolute',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    // backgroundColor: 'rgba(255, 255, 255, 0.4)',
     width: '100%',
-    borderTopLeftRadius: BOARD_BORDER_RADIUS,
-    borderTopRightRadius: BOARD_BORDER_RADIUS,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
+    top: 0,
+    left: 0,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 10,
+    zIndex: 1,
   },
   titleContainer: {
     display: 'flex',
@@ -167,8 +242,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     height: 50,
-    borderTopWidth: 2,
-    borderColor: '#efefef',
+  },
+  filters: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: -5,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderBottomWidth: PIXEL,
+    borderColor: 'rgba(0, 0, 0, 0.25)',
   },
   navbarModes: {
     flex: 0,
@@ -186,16 +270,17 @@ const styles = StyleSheet.create({
     height: 50,
   },
   scrollViewContainer: {
+    position: 'relative',
     display: 'flex',
     width: '100%',
     padding: CARD_MARGIN / 2,
-    marginBottom: 50,
   },
   cardContainer: {
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
+    paddingBottom: TABBAR_HEIGHT,
   },
   title: {
     fontSize: 32,
@@ -206,8 +291,8 @@ const styles = StyleSheet.create({
     width: 200,
     height: 5,
     marginTop: 10,
-    marginBottom: 15,
-    backgroundColor: 'rgba(0, 0, 0, .2)'
+    marginBottom: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0.15)'
   },
   btnContainerView: {
     marginLeft: 0,
@@ -244,10 +329,10 @@ const styles = StyleSheet.create({
     height: SCREEN_WIDTH - CARD_MARGIN * 6,
     borderRadius: CARD_BORDER_RADIUS,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 50 },
+    shadowOffset: { width: 0, height: 20 },
     backgroundColor: 'white',
-    shadowOpacity: 0.9,
-    shadowRadius: 200,
+    shadowOpacity: 0.5,
+    shadowRadius: 40,
   },
   popupImage: {
     width: SCREEN_WIDTH - CARD_MARGIN * 6,
@@ -255,5 +340,12 @@ const styles = StyleSheet.create({
     borderRadius: CARD_BORDER_RADIUS,
     // borderTopLeftRadius: CARD_BORDER_RADIUS,
     // borderTopRightRadius: CARD_BORDER_RADIUS,
-  }
+  },
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    // bottom: 0,
+    left: 0,
+  },
 })

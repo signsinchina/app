@@ -6,19 +6,28 @@ import { Font, AppLoading, Location, Permissions } from 'expo'
 
 import Container from './components/Container'
 import MainBoard from './components/MainBoard'
-
 import Cam from './components/Cam'
+
+import API from './api'
 
 export default class App extends Component {
   constructor() {
     super()
 
     this.state = {
-      isReady: false
+      isReady: false,
+      isAPIReady: false,
+      mode: 'index',
     }
+    this.api = new API()
   }
   componentWillMount() {
+    this.loadAPIAsync()
     this.loadResourcesAsync()
+  }
+  async loadAPIAsync() {
+    await this.api.init()
+    this.setState({isAPIReady: true})
   }
   async loadResourcesAsync() {
     await Font.loadAsync({
@@ -42,6 +51,9 @@ export default class App extends Component {
   //     throw new Error('Location permission not granted')
   //   }
   // }
+  changeMode(mode) {
+    this.setState({ mode })
+  }
   render() {
     if (!this.state.isReady) {
       return <AppLoading/>
@@ -49,8 +61,8 @@ export default class App extends Component {
 
     return (
       <Container>
-        <Cam/>
-        <MainBoard/>
+        <Cam api={this.api} mode={this.state.mode}/>
+        <MainBoard api={this.api} apiReady={this.state.isAPIReady} onModeChange={mode => this.changeMode(mode)}/>
       </Container>
     )
   }

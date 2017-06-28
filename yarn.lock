@@ -1315,12 +1315,6 @@ bser@1.0.2:
   dependencies:
     node-int64 "^0.4.0"
 
-bser@^1.0.2:
-  version "1.0.3"
-  resolved "http://registry.npm.taobao.org/bser/download/bser-1.0.3.tgz#d63da19ee17330a0e260d2a34422b21a89520317"
-  dependencies:
-    node-int64 "^0.4.0"
-
 bser@^2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/bser/download/bser-2.0.0.tgz#9ac78d3ed5d915804fd87acb158bc797147a1719"
@@ -2008,7 +2002,7 @@ expand-range@^1.8.1:
   dependencies:
     fill-range "^2.1.0"
 
-expo@^18.0.3:
+expo@^18.0.4:
   version "18.0.4"
   resolved "http://registry.npm.taobao.org/expo/download/expo-18.0.4.tgz#9f7d70a5ec1ff7965ed402c4932c18d6c8565eb4"
   dependencies:
@@ -3749,16 +3743,9 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "http://registry.npm.taobao.org/negotiator/download/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
-node-fetch@1.6.3:
+node-fetch@1.6.3, node-fetch@^1.0.1, node-fetch@^1.3.3:
   version "1.6.3"
   resolved "http://registry.npm.taobao.org/node-fetch/download/node-fetch-1.6.3.tgz#dc234edd6489982d58e8f0db4f695029abcd8c04"
-  dependencies:
-    encoding "^0.1.11"
-    is-stream "^1.0.1"
-
-node-fetch@^1.0.1, node-fetch@^1.3.3:
-  version "1.7.1"
-  resolved "http://registry.npm.taobao.org/node-fetch/download/node-fetch-1.7.1.tgz#899cb3d0a3c92f952c47f1b876f4c8aeabd400d5"
   dependencies:
     encoding "^0.1.11"
     is-stream "^1.0.1"
@@ -4228,6 +4215,10 @@ react-native-branch@2.0.0-beta.3:
   version "2.0.0-beta.3"
   resolved "http://registry.npm.taobao.org/react-native-branch/download/react-native-branch-2.0.0-beta.3.tgz#2167af86bbc9f964bd45bd5f37684e5b54965e32"
 
+react-native-camera@0.6:
+  version "0.6.0"
+  resolved "http://registry.npm.taobao.org/react-native-camera/download/react-native-camera-0.6.0.tgz#dd2760b7857d660761c78f2da575b494fdc8dcb5"
+
 react-native-elements@^0.13.0:
   version "0.13.0"
   resolved "http://registry.npm.taobao.org/react-native-elements/download/react-native-elements-0.13.0.tgz#1cec901105aa29d3d07c10f143c9c0cc39dfc8a5"
@@ -4244,10 +4235,6 @@ react-native-elements@^0.13.0:
   resolved "https://github.com/callstack-io/react-native-fbads/tarball/v4.1.0#e836ed7f4502593d4a4757f27cdfa0ffef4dc729"
   dependencies:
     eventemitter3 "^2.0.2"
-
-react-native-gesture-recognizers@^0.3.0:
-  version "0.3.0"
-  resolved "http://registry.npm.taobao.org/react-native-gesture-recognizers/download/react-native-gesture-recognizers-0.3.0.tgz#b6fdc70787e40801b267de41d9cccef0b963e46b"
 
 "react-native-maps@https://github.com/expo/react-native-maps/archive/v0.15.2.tar.gz":
   version "0.15.2"
@@ -4301,9 +4288,9 @@ react-native-vector-icons@4.1.1:
     prop-types "^15.5.8"
     yargs "^6.3.0"
 
-react-native@^0.45.1:
+"react-native@https://github.com/expo/react-native#sdk-18.0.1":
   version "0.45.1"
-  resolved "http://registry.npm.taobao.org/react-native/download/react-native-0.45.1.tgz#b3283c4a88233421f9c662a2ff1a4ccc8a9f07c0"
+  resolved "https://github.com/expo/react-native#3cc413b3cbc46f83f1016288bcffd08b216f95ea"
   dependencies:
     absolute-path "^0.0.0"
     art "^0.10.0"
@@ -4325,7 +4312,6 @@ react-native@^0.45.1:
     babel-types "^6.24.1"
     babylon "^6.17.0"
     base64-js "^1.1.2"
-    bser "^1.0.2"
     chalk "^1.1.1"
     commander "^2.9.0"
     concat-stream "^1.6.0"
@@ -4371,7 +4357,6 @@ react-native@^0.45.1:
     regenerator-runtime "^0.9.5"
     request "^2.79.0"
     rimraf "^2.5.4"
-    sane "~1.4.1"
     semver "^5.0.3"
     shell-quote "1.6.1"
     source-map "^0.5.6"
@@ -4731,17 +4716,6 @@ safe-buffer@~5.0.1:
 safe-json-stringify@~1:
   version "1.0.4"
   resolved "http://registry.npm.taobao.org/safe-json-stringify/download/safe-json-stringify-1.0.4.tgz#81a098f447e4bbc3ff3312a243521bc060ef5911"
-
-sane@~1.4.1:
-  version "1.4.1"
-  resolved "http://registry.npm.taobao.org/sane/download/sane-1.4.1.tgz#88f763d74040f5f0c256b6163db399bf110ac715"
-  dependencies:
-    exec-sh "^0.2.0"
-    fb-watchman "^1.8.0"
-    minimatch "^3.0.2"
-    minimist "^1.1.1"
-    walker "~1.0.5"
-    watch "~0.10.0"
 
 sane@~1.5.0:
   version "1.5.0"

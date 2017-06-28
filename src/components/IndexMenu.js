@@ -35,6 +35,8 @@ export default class IndexMenu extends Component {
       Animated.spring(
         this.state.heightAnim, {
           toValue: newProps.open ? 55 : 10,
+          tension: 35,
+          friction: 7,
         }
       ).start()
     }

@@ -5,6 +5,8 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 
+import { BOARD_MARGIN, TABBAR_HEIGHT } from '../values'
+
 export default class CaptureBoard extends Component {
   render() {
     return (
@@ -13,7 +15,7 @@ export default class CaptureBoard extends Component {
           <Text style={styles.subtitle}>PROJECT</Text>
           <Text style={styles.subtitle}>SIGNSINCHINA</Text>
         </View>
-        <View>
+        <View style={{alignSelf: 'flex-end'}}>
           <Text style={styles.title}>AR</Text>
           <Text style={styles.title}>GAMING</Text>
           <Text style={styles.title}>MODE</Text>
@@ -26,10 +28,10 @@ export default class CaptureBoard extends Component {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: 30,
-    right: 30,
-    bottom: 30 + 50,
-    left: 30,
+    top: BOARD_MARGIN,
+    right: BOARD_MARGIN,
+    bottom: BOARD_MARGIN + TABBAR_HEIGHT,
+    left: BOARD_MARGIN,
     display: 'flex',
     alignItems: 'flex-start',
     justifyContent: 'space-between',

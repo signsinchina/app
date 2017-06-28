@@ -1,6 +1,6 @@
 {
   "name": "signsinchina",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "devDependencies": {
     "jest-expo": "~18.0.0",
@@ -19,10 +19,11 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "expo": "^18.0.3",
+    "expo": "^18.0.4",
+    "lodash": "^4.17.4",
     "react": "16.0.0-alpha.12",
-    "react-native": "^0.45.1",
-    "react-native-elements": "^0.13.0",
-    "react-native-gesture-recognizers": "^0.3.0"
+    "react-native": "https://github.com/expo/react-native#sdk-18.0.1",
+    "react-native-camera": "0.6",
+    "react-native-elements": "^0.13.0"
   }
 }

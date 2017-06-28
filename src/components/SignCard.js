@@ -20,17 +20,18 @@ export default class MainBoard extends Component {
     })
   }
   render() {
+    const {file, title} = this.props
     return (
       <View>
         <TouchableOpacity
           delayPressIn={200}
           delayPressOut={10}
           onPress={() => {
-            this.props.openModal({image: this.props.file})
+            this.props.openModal({image: this.props.file.high})
           }}
           onPressIn={() => {
             this.pressIn()
-            this.props.openModal({image: this.props.file})
+            this.props.openModal({image: this.props.file.high})
           }}
           onPressOut={() => {
             if (Date.now() - this.state.pressTS < 500) {
@@ -39,8 +40,8 @@ export default class MainBoard extends Component {
             this.props.closeModal()
           }}>
           <View style={styles.container}>
-            <Image source={this.props.file} style={styles.image}/>
-            <Text style={styles.title}>TITLE</Text>
+            <Image source={file.low} style={styles.image}/>
+            <Text style={styles.title}>{title || 'TITLE'}</Text>
           </View>
         </TouchableOpacity>
       </View>
